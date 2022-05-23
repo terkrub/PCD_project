@@ -179,6 +179,7 @@ public class RegisterGUI extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null,"Register successful !!!","Information",JOptionPane.INFORMATION_MESSAGE);
                     LoginGUI loginGUI = new LoginGUI(db);
                     loginGUI.setLocationRelativeTo(this);
+                    System.out.println("test");
                     this.dispose();
                 }
             }
