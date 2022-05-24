@@ -20,9 +20,15 @@ public class Database {
             String tableName = "UserInfo";
 
             if (!checkTableExisting(tableName)) {
-                statement.executeUpdate("CREATE TABLE " + tableName + " (userid VARCHAR(12), password VARCHAR(12), money DOUBLE)");
+                statement.executeUpdate("CREATE TABLE " + tableName + " (userid VARCHAR(50), password VARCHAR(50), money DOUBLE)");
             }
+
+            if (!checkTableExisting("Products")) {
+                statement.executeUpdate("CREATE TABLE Products (productname VARCHAR(30), inventories INT, price DOUBLE)");
+            }
+            
             statement.close();
+            
 
         } catch (Throwable e) {
             System.out.println("error");
@@ -33,7 +39,7 @@ public class Database {
     public boolean checkUsername(String username){
         try {
             Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT userid, password, money FROM UserInfo "
+            ResultSet rs = statement.executeQuery("SELECT userid FROM UserInfo "
                     + "WHERE userid = '" + username + "'");
             if (rs.next()) {
                 System.out.println("this username already use");
