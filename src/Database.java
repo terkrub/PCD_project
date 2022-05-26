@@ -69,6 +69,7 @@ public class Database {
                 } else {
                     data.loginFlag = false;
                 }
+                System.out.println("test");
             } else {
                 System.out.println("no such user");
                 /*
