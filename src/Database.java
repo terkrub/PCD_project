@@ -35,7 +35,20 @@ public class Database {
 
         }
     }
+    
+    public boolean addProduct(String name, int inventories, double price){
+         try {
+            Statement statement = conn.createStatement();
 
+            statement.executeUpdate("INSERT INTO Products "
+                    + "VALUES('" + name + "', '" + inventories + "', '" + price + " )");
+            return true;
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+    
     public boolean checkUsername(String username){
         try {
             Statement statement = conn.createStatement();
@@ -65,6 +78,7 @@ public class Database {
                 System.out.println("found user");
                 if (password.compareTo(pass) == 0) {
                     data.money = rs.getInt("money");
+                    data.username = username;
                     data.loginFlag = true;
                 } else {
                     data.loginFlag = false;

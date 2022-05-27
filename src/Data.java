@@ -1,4 +1,10 @@
+
+import java.util.HashMap;
+
 public class Data {
     boolean loginFlag = false;
-    int money = 0;
+    String username;
+    double money = 0.00f;
+    String basket;
+    HashMap<String, Product> products;
 }

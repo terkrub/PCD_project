@@ -162,6 +162,14 @@ public class LoginGUI extends javax.swing.JFrame {
             jLabel4.setText("Username or Password incorrect!!!");
             jLabel4.setForeground(Color.RED);
         }
+        else{
+            StoreGUI store = new StoreGUI(this.db,data);
+            store.setVisible(true);
+            store.pack();
+            store.setLocationRelativeTo(this);
+            store.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.dispose();
+        }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     /**

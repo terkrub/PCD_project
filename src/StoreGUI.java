@@ -1,7 +1,6 @@
 
 import java.awt.Color;
-import java.awt.GridLayout;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,18 +15,22 @@ import javax.swing.JLabel;
 public class StoreGUI extends javax.swing.JFrame {
     
     Database db;
+    Data data;
     
     /**
      * Creates new form StoreGUI
      * @param db
+     * @param data
      */
-    public StoreGUI(Database db) {
+    public StoreGUI(Database db, Data data) {
         initComponents();
         this.db = db;
+        this.data = data;
         this.Depositpanel.setVisible(false);
         this.BasketPanel.setVisible(false);
         this.Checkoutpanel.setVisible(false);
         this.HistoryPanel.setVisible(false);
+        this.UserInfo.setText(String.format("Username: %s Money: %.2f",this.data.username,this.data.money));
 
     }
 
@@ -51,13 +54,15 @@ public class StoreGUI extends javax.swing.JFrame {
         UserInfo = new javax.swing.JLabel();
         LogoutB = new javax.swing.JLabel();
         Homepanel = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTable4 = new javax.swing.JTable();
         Depositpanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        amount = new javax.swing.JTextField();
+        amountF = new javax.swing.JTextField();
         cfDepositB = new javax.swing.JButton();
         BasketPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -187,15 +192,47 @@ public class StoreGUI extends javax.swing.JFrame {
 
         Homepanel.setBackground(new java.awt.Color(99, 210, 255));
 
+        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null}
+            },
+            new String [] {
+                "Name", "Amount", "Total Price", ""
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable4.getTableHeader().setReorderingAllowed(false);
+        jScrollPane4.setViewportView(jTable4);
+        if (jTable4.getColumnModel().getColumnCount() > 0) {
+            jTable4.getColumnModel().getColumn(0).setResizable(false);
+            jTable4.getColumnModel().getColumn(1).setResizable(false);
+            jTable4.getColumnModel().getColumn(2).setResizable(false);
+            jTable4.getColumnModel().getColumn(3).setResizable(false);
+        }
+
         javax.swing.GroupLayout HomepanelLayout = new javax.swing.GroupLayout(Homepanel);
         Homepanel.setLayout(HomepanelLayout);
         HomepanelLayout.setHorizontalGroup(
             HomepanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 729, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
         );
         HomepanelLayout.setVerticalGroup(
             HomepanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 420, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
         );
 
         Depositpanel.setBackground(new java.awt.Color(99, 210, 255));
@@ -214,10 +251,10 @@ public class StoreGUI extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(99, 210, 255));
 
-        amount.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        amount.addActionListener(new java.awt.event.ActionListener() {
+        amountF.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        amountF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                amountActionPerformed(evt);
+                amountFActionPerformed(evt);
             }
         });
 
@@ -225,14 +262,19 @@ public class StoreGUI extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(amount, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(amountF, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(amount, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+            .addComponent(amountF, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
         );
 
         cfDepositB.setText("Comfirm Deposit");
+        cfDepositB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cfDepositBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout DepositpanelLayout = new javax.swing.GroupLayout(Depositpanel);
         Depositpanel.setLayout(DepositpanelLayout);
@@ -390,8 +432,8 @@ public class StoreGUI extends javax.swing.JFrame {
         HistoryPanelLayout.setVerticalGroup(
             HistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HistoryPanelLayout.createSequentialGroup()
-                .addGap(0, 65, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 75, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -510,9 +552,9 @@ public class StoreGUI extends javax.swing.JFrame {
         this.HomeB.setForeground(Color.RED);
     }//GEN-LAST:event_HomeBMouseClicked
 
-    private void amountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountActionPerformed
+    private void amountFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountFActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_amountActionPerformed
+    }//GEN-LAST:event_amountFActionPerformed
 
     private void ViewBasketBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ViewBasketBMouseClicked
         // TODO add your handling code here:
@@ -539,7 +581,6 @@ public class StoreGUI extends javax.swing.JFrame {
         
         this.BasketPanel.setVisible(false);
         this.ViewBasketB.setForeground(Color.white);
-        
         
         this.HistoryPanel.setVisible(false);
         this.HistoryB.setForeground(Color.white);
@@ -570,40 +611,16 @@ public class StoreGUI extends javax.swing.JFrame {
         this.HistoryB.setForeground(Color.RED);
     }//GEN-LAST:event_HistoryBMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(StoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(StoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(StoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(StoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void cfDepositBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cfDepositBActionPerformed
+        try{
+            double amount = Double.parseDouble(amountF.getText());
+            this.data.money += amount;
+            this.UserInfo.setText(String.format("Username: %s Money: %.2f",this.data.username,this.data.money));
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null,"Please enter the amount you want to deposit","ERROR",JOptionPane.ERROR_MESSAGE);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_cfDepositBActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new StoreGUI(new Database()).setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel BasketPanel;
@@ -619,7 +636,7 @@ public class StoreGUI extends javax.swing.JFrame {
     private javax.swing.JLabel UserInfo;
     private javax.swing.JPanel UserInfoPanel;
     private javax.swing.JLabel ViewBasketB;
-    private javax.swing.JTextField amount;
+    private javax.swing.JTextField amountF;
     private javax.swing.JButton cfDepositB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -629,9 +646,11 @@ public class StoreGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTable4;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel menupanel;
     private javax.swing.JButton payB;
