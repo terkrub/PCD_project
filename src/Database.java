@@ -3,6 +3,7 @@ import java.sql.*;
 
 public class Database {
 
+    Data data;
     Connection conn = null;
     String url = "jdbc:derby:ShoppingApp;create=true";  //url of the DB host
 
@@ -10,7 +11,19 @@ public class Database {
     String dbpassword = "pdc";   //your DB password
 
     public Database(){
+        this.data = new Data();
         this.dbsetup();
+        this.addProduct("Pen",100,0.99);
+        this.addProduct("TV",100,999.99);
+        this.addProduct("Kitkat",1000,1.99);
+        this.addProduct("m&m",500,2.99);
+        this.addProduct("Paper box",555,0.5);
+        this.addProduct("iPhone11",600,1999.99);
+        this.addProduct("Moniter",99,499.99);
+        this.addProduct("Heater",600,99.99);
+        this.addProduct("Candy",600,0.99);
+        this.addProduct("Keyboard",555,95.99);
+        this.importProductsDB();
     }
 
     public void dbsetup() {
@@ -36,20 +49,49 @@ public class Database {
         }
     }
     
-    public boolean addProduct(String name, int inventories, double price){
-         try {
+    public boolean importProductsDB(){
+        try{
             Statement statement = conn.createStatement();
-
-            statement.executeUpdate("INSERT INTO Products "
-                    + "VALUES('" + name + "', '" + inventories + "', '" + price + " )");
+            ResultSet rs = statement.executeQuery("SELECT productname, inventories, price FROM Products ");
+            
+            while(rs.next()){
+               this.data.products.put(rs.getString("productname"),new Product(rs.getString("productname"), rs.getInt("inventories") ,rs.getDouble("price")));
+            }
+            System.out.println(this.data.products.size());
             return true;
-
-        } catch (SQLException e) {
+            
+        }catch(SQLException e){
+            System.out.println("Error"+this.data.products.size());
             return false;
         }
+        
+    }
+    
+    public boolean addProduct(String name, int inventories, double price){
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT productname FROM Products "
+                    + "WHERE productname = '" + name + "'");
+            if (rs.next()) {
+                System.out.println("Already have this product");
+                return false;
+            } else {
+                
+                System.out.println("no such user");
+                statement.executeUpdate("INSERT INTO Products "
+                    + "VALUES('" + name + "', " + inventories + ", " + price + ") ");
+                
+                return true;
+            }
+        } catch (SQLException ex) {
+            System.out.println("table");
+            return false;
+        }
+         
     }
     
     public boolean checkUsername(String username){
+        
         try {
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT userid FROM UserInfo "
@@ -68,7 +110,6 @@ public class Database {
     }
 
     public Data checkLogin(String username, String password) {
-        Data data = new Data();
         try {
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT userid, password, money FROM UserInfo "
