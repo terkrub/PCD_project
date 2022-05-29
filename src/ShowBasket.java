@@ -25,11 +25,13 @@ public class ShowBasket implements ActionListener {
     Basket basket;
     Product product;
     JPanel basketPanel;
+    Checkout check;
     
     public ShowBasket(Data data, Basket basket,StoreGUI store){
         this.data = data;
         this.basket = basket;
         this.store = store;
+        this.check = new Checkout(data,basket);
     }
     
     public void showItems(JPanel itemList){
@@ -50,6 +52,8 @@ public class ShowBasket implements ActionListener {
             button.addActionListener(this);
             itemList.add(button);
         }   
+        
+        store.totalPrice.setText(String.format("TOTAL PRICE : %.2f $", check.calculatePrice()));
     }
     
 
@@ -57,12 +61,16 @@ public class ShowBasket implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         String[] str = command.split(" ");
-        product = data.products.get(str[1]);
+        String pName = str[1];
+        if (str.length >2) {
+            pName = str[1]+" "+str[2];
+        }
+        product = data.products.get(pName);
         
         if (str[0].equalsIgnoreCase("Remove")) {
             System.out.println("remove");
-            product.inventories += basket.basket.get(str[1]);
-            basket.removeItems(str[1]);
+            product.inventories += basket.basket.get(pName);
+            basket.removeItems(pName);
             
             this.showItems(this.basketPanel);
             this.basketPanel.setVisible(false);
@@ -73,14 +81,16 @@ public class ShowBasket implements ActionListener {
             System.out.println("edit");
             String userInput = JOptionPane.showInputDialog(null,"How many pieces?", null);
             
-            product.inventories += basket.basket.get(str[1]);
-            basket.removeItems(str[1]);
+            
             
             try{
                 int amount = Integer.parseInt(userInput);
+                
 
-                if (amount >0 && amount <= product.inventories) {
-                    this.basket.addItems(str[1], amount);
+                if (amount >0 && amount <= product.inventories + basket.basket.get(pName)) {
+                    product.inventories += basket.basket.get(pName);
+                    basket.removeItems(pName);
+                    this.basket.addItems(pName, amount);
                     product.inventories -= amount;
                     this.showItems(this.basketPanel);
                     this.basketPanel.setVisible(false);

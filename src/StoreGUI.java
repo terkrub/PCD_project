@@ -1,5 +1,7 @@
 
 import java.awt.Color;
+import java.util.Date;
+
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
@@ -15,6 +17,7 @@ import javax.swing.Timer;
  */
 public class StoreGUI extends javax.swing.JFrame {
     
+    UpdateDB update;
     Database db;
     Data data;
     ShowAllProduct view;
@@ -25,9 +28,11 @@ public class StoreGUI extends javax.swing.JFrame {
      * Creates new form StoreGUI
      * @param db
      * @param data
+     * @param update
      */
-    public StoreGUI(Database db, Data data) {
+    public StoreGUI(Database db, Data data, UpdateDB update) {
         initComponents();
+        this.update = update;
         this.basket = new Basket();
         this.showBasket = new ShowBasket(data,basket,this);
         this.db = db;
@@ -37,12 +42,13 @@ public class StoreGUI extends javax.swing.JFrame {
         this.BasketPanel.setVisible(false);
         this.Checkoutpanel.setVisible(false);
         this.HistoryPanel.setVisible(false);
-        this.UserInfo.setText(String.format("Username: %s Money: %.2f",this.data.username,this.data.money));
+        this.UserInfo.setText(String.format("Username: %s Money: %.2f $",this.data.username,this.data.money));
         this.ViewBasketB.setText("VIEW BASKET(Total items : "+ basket.totalItems() +")");
         view.showProducts(productpanel);
         
 
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -330,6 +336,11 @@ public class StoreGUI extends javax.swing.JFrame {
         totalPrice.setText("TOTAL PRICE : 0.00 $");
 
         payB.setText("PAY ALL NOW !!!");
+        payB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                payBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout itemListLayout = new javax.swing.GroupLayout(itemList);
         itemList.setLayout(itemListLayout);
@@ -645,6 +656,7 @@ public class StoreGUI extends javax.swing.JFrame {
         this.Depositpanel.setVisible(false);
         this.DepositB.setForeground(Color.white);
         
+        new ShowHistory(data).show(jTable3);
         this.HistoryPanel.setVisible(true);
         this.HistoryB.setForeground(Color.RED);
     }//GEN-LAST:event_HistoryBMouseClicked
@@ -653,11 +665,34 @@ public class StoreGUI extends javax.swing.JFrame {
         try{
             double amount = Double.parseDouble(amountF.getText());
             this.data.money += amount;
-            this.UserInfo.setText(String.format("Username: %s Money: %.2f",this.data.username,this.data.money));
+            this.UserInfo.setText(String.format("Username: %s Money: %.2f $",this.data.username,this.data.money));
+            data.history.push(new History("Deposit",new Date(),amount,0));
+            update.updateMoney();
+            update.addHistory("Deposit", new Date(), amount, 0.0);
+            JOptionPane.showMessageDialog(null,"Deposit Sucessful !!!","Sucess",JOptionPane.INFORMATION_MESSAGE);
+            
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null,"Please enter the amount you want to deposit","ERROR",JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_cfDepositBActionPerformed
+
+    private void payBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_payBActionPerformed
+        Checkout check = new Checkout(data,basket);
+        if (basket.basket.isEmpty()){
+            JOptionPane.showMessageDialog(null,"You do not have anything in basket","ERROR",JOptionPane.ERROR_MESSAGE);
+        }
+        else if (!check.payAll(update)) {
+            JOptionPane.showMessageDialog(null,"You do not have enought money to buy","ERROR",JOptionPane.ERROR_MESSAGE);
+        }
+        showBasket.showItems(itemList);
+        
+        this.UserInfo.setText(String.format("Username: %s Money: %.2f $",this.data.username,this.data.money));
+        this.ViewBasketB.setText("VIEW BASKET(Total items : "+ basket.totalItems() +")");
+        this.Checkoutpanel.setVisible(false);
+        this.Checkoutpanel.setVisible(true);
+        this.CheckoutB.setForeground(Color.RED);
+        update.updateMoney();
+    }//GEN-LAST:event_payBActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -695,6 +730,6 @@ public class StoreGUI extends javax.swing.JFrame {
     private javax.swing.JPanel menupanel;
     private javax.swing.JButton payB;
     private javax.swing.JPanel productpanel;
-    private javax.swing.JLabel totalPrice;
+    public javax.swing.JLabel totalPrice;
     // End of variables declaration//GEN-END:variables
 }

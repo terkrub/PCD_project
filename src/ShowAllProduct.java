@@ -51,7 +51,12 @@ public class ShowAllProduct implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         String[] str = command.split(" ");
-        Product product = data.products.get(str[1]);
+        String pName = str[1];
+        if (str.length >2) {
+            pName = str[1]+" "+str[2];
+        }
+        
+        Product product = data.products.get(pName);
         if (str[0].equalsIgnoreCase("buy")) {
             
             String userInput = JOptionPane.showInputDialog(null,"How many pieces?", null);
@@ -60,7 +65,8 @@ public class ShowAllProduct implements ActionListener {
                 int amount = Integer.parseInt(userInput);
 
                 if (amount >0 && amount <= product.inventories) {
-                    this.basket.addItems(str[1], amount);
+                    this.basket.addItems(pName, amount);
+                    
                     product.inventories -= amount;
                     this.showProducts(this.productpanel);
                     this.productpanel.setVisible(false);

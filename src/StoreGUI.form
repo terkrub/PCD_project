@@ -517,11 +517,17 @@
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="text" type="java.lang.String" value="TOTAL PRICE : 0.00 $"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="payB">
               <Properties>
                 <Property name="text" type="java.lang.String" value="PAY ALL NOW !!!"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="payBActionPerformed"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JPanel" name="itemList">
 

@@ -40,12 +40,33 @@ public class Database {
                 statement.executeUpdate("CREATE TABLE Products (productname VARCHAR(30), inventories INT, price DOUBLE)");
             }
             
+            if (!checkTableExisting("History")) {
+                statement.executeUpdate("CREATE TABLE History (userid VARCHAR(30), action VARCHAR(30), datetime DATE, amount DOUBLE, totalprice DOUBLE)");
+            }
+            
             statement.close();
             
 
         } catch (Throwable e) {
             System.out.println("error");
 
+        }
+    }
+    
+    public boolean importHistoryDB(){
+        try{
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT userid, action, datetime, amount, totalprice FROM History "
+                    + "WHERE userid = '" + data.username + "'"
+                    + "ORDER BY datetime DESC");
+            while(rs.next()){
+                 java.util.Date utilDate = new java.util.Date(rs.getDate("datetime").getTime());
+                 this.data.history.push(new History(rs.getString("action"),utilDate,rs.getDouble("amount"),rs.getDouble("totalprice")));
+            }
+             return true;
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+            return false;
         }
     }
     
@@ -118,7 +139,7 @@ public class Database {
                 String pass = rs.getString("password");
                 System.out.println("found user");
                 if (password.compareTo(pass) == 0) {
-                    data.money = rs.getInt("money");
+                    data.money = rs.getDouble("money");
                     data.username = username;
                     data.loginFlag = true;
                 } else {

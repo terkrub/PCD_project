@@ -158,12 +158,14 @@ public class LoginGUI extends javax.swing.JFrame {
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         System.out.println("Login");
         Data data = db.checkLogin(un.getText().toLowerCase(), pw.getText());
+        UpdateDB update = new UpdateDB(db.conn,data);
         if (!data.loginFlag){
             jLabel4.setText("Username or Password incorrect!!!");
             jLabel4.setForeground(Color.RED);
         }
         else{
-            StoreGUI store = new StoreGUI(this.db,data);
+            this.db.importHistoryDB();
+            StoreGUI store = new StoreGUI(this.db,data,update);
             store.setVisible(true);
             store.pack();
             store.setLocationRelativeTo(this);
