@@ -9,4 +9,9 @@ public class Data {
     double money = 0.00f;
     HashMap<String,Product> products = new HashMap<>();
     Stack<History> history = new Stack();
+    
+    public void depositMoney(double amount){
+        this.money += amount;
+    }
+    
 }

@@ -1,4 +1,5 @@
 
+import java.awt.HeadlessException;
 import java.util.Date;
 import javax.swing.JOptionPane;
 
@@ -32,17 +33,21 @@ public class Checkout {
     }
     
     public boolean payAll(UpdateDB update){
-        if (data.money >= calculatePrice()) {
-            update.addHistory("Buy", new Date(),Double.valueOf(basket.totalItems()), calculatePrice());
-            data.history.push(new History("Buy", new Date(),Double.valueOf(basket.totalItems()), calculatePrice()));
-            for(String s : basket.basket.keySet()){
-                update.updateProduct(s, data.products.get(s).getInventories());
+        try{
+            if (data.money >= calculatePrice()) {
+                update.addHistory("Buy", new Date(),Double.valueOf(basket.totalItems()), calculatePrice());
+                data.history.push(new History("Buy", new Date(),Double.valueOf(basket.totalItems()), calculatePrice()));
+                for(String s : basket.basket.keySet()){
+                    update.updateProduct(s, data.products.get(s).getInventories());
+                }
+
+                data.money -= calculatePrice();
+                basket.basket.clear();
+                JOptionPane.showMessageDialog(null,"Payment Sucessful !!!","Sucess",JOptionPane.INFORMATION_MESSAGE);
+                return true;
             }
-            
-            data.money -= calculatePrice();
-            basket.basket.clear();
-            JOptionPane.showMessageDialog(null,"Payment Sucessful !!!","Sucess",JOptionPane.INFORMATION_MESSAGE);
-            return true;
+        }catch(HeadlessException e){
+            return false;
         }
         
         return false;
