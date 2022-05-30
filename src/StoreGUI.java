@@ -666,7 +666,7 @@ public class StoreGUI extends javax.swing.JFrame {
             double amount = Double.parseDouble(amountF.getText());
             this.data.money += amount;
             this.UserInfo.setText(String.format("Username: %s Money: %.2f $",this.data.username,this.data.money));
-            data.history.push(new History("Deposit",new Date(),amount,0));
+            data.history.push(new History("Deposit",new Date(),0,amount));
             update.updateMoney();
             update.addHistory("Deposit", new Date(), amount, 0.0);
             JOptionPane.showMessageDialog(null,"Deposit Sucessful !!!","Sucess",JOptionPane.INFORMATION_MESSAGE);
