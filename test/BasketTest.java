@@ -59,6 +59,7 @@ public class BasketTest {
         String name = "";
         int expResult = 0;
         Basket instance = new Basket();
+        instance.addItems(name, 0);
         instance.removeItems(name);
         assertEquals(expResult,instance.basket.size());
     }
